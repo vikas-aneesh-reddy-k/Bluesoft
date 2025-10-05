@@ -67,12 +67,12 @@ const GEOCODING_API = {
       }
       // Order: Open-Meteo → Photon → Mapbox (via backend) → backend Nominatim (wider candidate set)
       const q = locationName.trim();
-      // Use backend proxy for Open-Meteo to avoid CORS (only if configured)
+      // Try backend proxy if configured, otherwise use Open-Meteo public geocoding first
       let response = API_BASE
         ? await fetch(`${API_BASE}/proxy/geocode?name=${encodeURIComponent(q)}`)
-        : new Response(null, { status: 599 });
+        : await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=en&format=json`).catch(() => new Response(null, { status: 599 } as any));
       if (!response.ok) {
-        response = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=10`);
+        response = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=10`).catch(() => new Response(null, { status: 599 } as any));
       }
       if (!response.ok) {
         response = API_BASE
@@ -123,7 +123,7 @@ const GEOCODING_API = {
       if (!candidates.length) {
         const retry = API_BASE
           ? await fetch(`${API_BASE}/proxy/geocode?name=${encodeURIComponent(q + ' India')}`)
-          : new Response(null, { status: 599 });
+          : await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q + ' India')}&count=5&language=en&format=json`).catch(() => new Response(null, { status: 599 } as any));
         if (retry.ok) {
           data = await retry.json();
           (data?.results||[]).forEach((r:any)=> push(r.latitude, r.longitude, `${r.name || ''}${r.admin1?`, ${r.admin1}`:''}${r.country?`, ${r.country}`:''}`));
