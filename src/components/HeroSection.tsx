@@ -34,7 +34,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
 
         {/* Main heading */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-5 sm:mb-6 bg-gradient-primary bg-clip-text text-transparent animate-fade-in leading-tight">
-          Will It Rain On My Parade?111
+          Will It Rain On My Parade?
         </h1>
         
         <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto animate-slide-up">
