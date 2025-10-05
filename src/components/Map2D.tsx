@@ -49,8 +49,9 @@ interface Map2DProps {
 // Geocoding API service (CORS-friendly via Open-Meteo)
 // Avoid using localhost on Vercel even if accidentally provided via env
 const __RAW_API_BASE = (import.meta as any).env?.VITE_BACKEND_URL || '';
-const __IS_LOCALHOST = typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
-const API_BASE = __RAW_API_BASE && !/__?localhost|127\.0\.0\.1/i.test(__RAW_API_BASE) ? __RAW_API_BASE : (__IS_LOCALHOST ? __RAW_API_BASE : '');
+const __IS_LOCALHOST = typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname);
+const __IS_LOCALHOST_URL = /(localhost|127\.0\.0\.1)/i.test(String(__RAW_API_BASE));
+const API_BASE = __RAW_API_BASE && !__IS_LOCALHOST_URL ? __RAW_API_BASE : (__IS_LOCALHOST ? __RAW_API_BASE : '');
 
 const GEOCODING_API = {
   geocode: async (locationName: string) => {
@@ -399,7 +400,7 @@ export function Map2D({ onLocationSelect, selectedLocation, weatherType = 'clear
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
   // Backend API
-  const BACKEND_URL = (__RAW_API_BASE && !/__?localhost|127\.0\.0\.1/i.test(__RAW_API_BASE))
+  const BACKEND_URL = (__RAW_API_BASE && !__IS_LOCALHOST_URL)
     ? __RAW_API_BASE
     : (__IS_LOCALHOST ? __RAW_API_BASE : '');
   const analyzeWeatherRisk = async (lat: number, lng: number, date: Date, radiusKm?: number, polygon?: Array<{lat:number; lng:number}>) => {
