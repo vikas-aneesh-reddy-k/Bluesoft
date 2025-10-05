@@ -13,9 +13,8 @@ Instead of relying on short-term weather forecasts, our app uses NASA's historic
 
 ## 🚀 Live Demo
 
-- **Frontend**: [https://your-app.vercel.app](https://your-app.vercel.app)
-- **Backend API**: [https://your-api.herokuapp.com](https://your-api.herokuapp.com)
-- **API Documentation**: [https://your-api.herokuapp.com/docs](https://your-api.herokuapp.com/docs)
+- **Live Link**: [https://your-app.vercel.app](https://bluesoft0.vercel.app/)
+- **Demonstration Link**: [https://your-api.herokuapp.com](https://drive.google.com/drive/folders/1UN7J0lroFZPTolEMBCLkGqzJMe1i6I8j)
 
 ## ✨ Key Features
 
