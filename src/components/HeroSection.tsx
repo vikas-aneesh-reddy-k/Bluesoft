@@ -105,6 +105,23 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
             </div>
           ))}
         </div>
+        {/* Footer (hero landing) */}
+        <div className="mt-12 sm:mt-16 text-center text-xs sm:text-sm text-muted-foreground">
+          <div className="mb-1">Made with <span role="img" aria-label="love">❤️</span> by</div>
+          <div className="flex flex-wrap gap-x-3 gap-y-1 justify-center">
+            <span>Vikas Kakarla</span>
+            <span>•</span>
+            <span>Sujith Putta</span>
+            <span>•</span>
+            <span>Dhanya Potla</span>
+            <span>•</span>
+            <span>Charan Gonuguntla</span>
+            <span>•</span>
+            <span>Sameeksha Ambati</span>
+            <span>•</span>
+            <span>Vignatri M</span>
+          </div>
+        </div>
       </div>
 
       {/* Floating elements */}
