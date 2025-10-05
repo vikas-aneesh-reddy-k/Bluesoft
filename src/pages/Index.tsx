@@ -158,7 +158,8 @@ const Index = () => {
 
       console.log('Sending weather analysis request:', requestData);
 
-      const response = await fetch('http://localhost:8000/analyze', {
+      const BACKEND_URL = (import.meta as any).env?.VITE_BACKEND_URL || '';
+      const response = await fetch(`${BACKEND_URL || ''}/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

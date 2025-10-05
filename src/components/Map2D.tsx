@@ -47,7 +47,8 @@ interface Map2DProps {
 }
 
 // Geocoding API service (CORS-friendly via Open-Meteo)
-const API_BASE = (import.meta as any).env?.VITE_BACKEND_URL || 'http://localhost:8000';
+// Avoid defaulting to localhost in hosted deployments.
+const API_BASE = (import.meta as any).env?.VITE_BACKEND_URL || '';
 
 const GEOCODING_API = {
   geocode: async (locationName: string) => {
@@ -66,13 +67,17 @@ const GEOCODING_API = {
       }
       // Order: Open-Meteo → Photon → Mapbox (via backend) → backend Nominatim (wider candidate set)
       const q = locationName.trim();
-      // Use backend proxy for Open-Meteo to avoid CORS
-      let response = await fetch(`${API_BASE}/proxy/geocode?name=${encodeURIComponent(q)}`);
+      // Use backend proxy for Open-Meteo to avoid CORS (only if configured)
+      let response = API_BASE
+        ? await fetch(`${API_BASE}/proxy/geocode?name=${encodeURIComponent(q)}`)
+        : new Response(null, { status: 599 });
       if (!response.ok) {
         response = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=10`);
       }
       if (!response.ok) {
-        response = await fetch(`${API_BASE}/proxy/nominatim/search?q=${encodeURIComponent(q)}&limit=5`);
+        response = API_BASE
+          ? await fetch(`${API_BASE}/proxy/nominatim/search?q=${encodeURIComponent(q)}&limit=5`)
+          : new Response(null, { status: 599 });
       }
       if (!response.ok) throw new Error(`Geocoding HTTP ${response.status}`);
       let data = await response.json();
@@ -101,7 +106,9 @@ const GEOCODING_API = {
       }
       if (!candidates.length) {
         // Try Mapbox via backend proxy if still no results
-        const mb = await fetch(`${API_BASE}/proxy/mapbox/search?q=${encodeURIComponent(q)}&limit=5`).catch(()=>null as any);
+        const mb = API_BASE
+          ? await fetch(`${API_BASE}/proxy/mapbox/search?q=${encodeURIComponent(q)}&limit=5`).catch(()=>null as any)
+          : null as any;
         if (mb && mb.ok) {
           const mbData = await mb.json();
           (mbData?.features||[]).forEach((f:any)=>{
@@ -114,7 +121,9 @@ const GEOCODING_API = {
       }
 
       if (!candidates.length) {
-        const retry = await fetch(`${API_BASE}/proxy/geocode?name=${encodeURIComponent(q + ' India')}`);
+        const retry = API_BASE
+          ? await fetch(`${API_BASE}/proxy/geocode?name=${encodeURIComponent(q + ' India')}`)
+          : new Response(null, { status: 599 });
         if (retry.ok) {
           data = await retry.json();
           (data?.results||[]).forEach((r:any)=> push(r.latitude, r.longitude, `${r.name || ''}${r.admin1?`, ${r.admin1}`:''}${r.country?`, ${r.country}`:''}`));
@@ -122,7 +131,9 @@ const GEOCODING_API = {
       }
 
       if (!candidates.length) {
-        const nom = await fetch(`${API_BASE}/proxy/nominatim/search?q=${encodeURIComponent(q)}&limit=5`).catch(()=>null as any);
+        const nom = API_BASE
+          ? await fetch(`${API_BASE}/proxy/nominatim/search?q=${encodeURIComponent(q)}&limit=5`).catch(()=>null as any)
+          : null as any;
         if (nom && nom.ok) {
           const nomData = await nom.json();
           (Array.isArray(nomData)?nomData:[]).forEach((r:any)=> push(parseFloat(r.lat), parseFloat(r.lon), r.display_name || r.name || ''));
@@ -141,20 +152,26 @@ const GEOCODING_API = {
   reverseGeocode: async (lat: number, lng: number) => {
     try {
       // Order: Open-Meteo reverse → Photon reverse → Mapbox (via backend) → backend Nominatim reverse
-      // Use backend proxy for Open-Meteo to avoid CORS
-      let response = await fetch(`${API_BASE}/proxy/reverse-geocode?latitude=${lat}&longitude=${lng}`);
+      // Use backend proxy for Open-Meteo to avoid CORS (only if configured)
+      let response = API_BASE
+        ? await fetch(`${API_BASE}/proxy/reverse-geocode?latitude=${lat}&longitude=${lng}`)
+        : new Response(null, { status: 599 });
       if (!response.ok) {
         response = await fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}`);
       }
       if (!response.ok) {
-        const mb = await fetch(`${API_BASE}/proxy/mapbox/reverse?latitude=${lat}&longitude=${lng}&limit=1`).catch(()=>null as any);
+        const mb = API_BASE
+          ? await fetch(`${API_BASE}/proxy/mapbox/reverse?latitude=${lat}&longitude=${lng}&limit=1`).catch(()=>null as any)
+          : null as any;
         if (mb && mb.ok) {
           const mbData = await mb.json();
           const feature = mbData?.features?.[0];
           const place = feature?.place_name || feature?.text;
           if (place) return { name: place, country: '', city: '' };
         }
-        response = await fetch(`${API_BASE}/proxy/nominatim/reverse?latitude=${lat}&longitude=${lng}&zoom=12`);
+        response = API_BASE
+          ? await fetch(`${API_BASE}/proxy/nominatim/reverse?latitude=${lat}&longitude=${lng}&zoom=12`)
+          : new Response(null, { status: 599 });
       }
       if (!response.ok) throw new Error(`Reverse geocoding HTTP ${response.status}`);
       const data = await response.json();
@@ -380,10 +397,11 @@ export function Map2D({ onLocationSelect, selectedLocation, weatherType = 'clear
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
   // Backend API
-  const BACKEND_URL = (import.meta as any).env?.VITE_BACKEND_URL || 'http://localhost:8000';
+  const BACKEND_URL = (import.meta as any).env?.VITE_BACKEND_URL || '';
   const analyzeWeatherRisk = async (lat: number, lng: number, date: Date, radiusKm?: number, polygon?: Array<{lat:number; lng:number}>) => {
     try {
       setIsAnalyzing(true);
+      if (!BACKEND_URL) throw new Error('No backend configured');
       const res = await fetch(`${BACKEND_URL}/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
