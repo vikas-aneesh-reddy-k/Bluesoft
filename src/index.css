@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Core backgrounds */
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    /* Cards */
+    --card: 222 47% 11%;
+    --card-foreground: 213 31% 91%;
+    --card-glow: 217 91% 60%;
+
+    /* Popovers */
+    --popover: 224 71% 4%;
+    --popover-foreground: 213 31% 91%;
+
+    /* Primary - Space blue */
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+    --primary-glow: 199 89% 48%;
+
+    /* Secondary - Deep purple */
+    --secondary: 263 70% 50%;
+    --secondary-foreground: 210 40% 98%;
+
+    /* Muted */
+    --muted: 223 47% 11%;
+    --muted-foreground: 215 20% 65%;
+
+    /* Accent - Aurora green */
+    --accent: 173 80% 40%;
+    --accent-foreground: 210 40% 98%;
+    --accent-glow: 173 80% 50%;
+
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Borders & inputs */
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    /* Weather colors */
+    --weather-sunny: 48 96% 53%;
+    --weather-rainy: 199 89% 48%;
+    --weather-cold: 195 100% 39%;
+    --weather-hot: 14 90% 57%;
+    --weather-windy: 215 50% 65%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(199 89% 48%));
+    --gradient-secondary: linear-gradient(135deg, hsl(263 70% 50%), hsl(217 91% 60%));
+    --gradient-accent: linear-gradient(135deg, hsl(173 80% 40%), hsl(199 89% 48%));
+    --gradient-aurora: linear-gradient(45deg, hsl(173 80% 40%), hsl(217 91% 60%), hsl(263 70% 50%));
+    --gradient-space: linear-gradient(180deg, hsl(224 71% 4%), hsl(222 47% 11%), hsl(217 33% 17%));
+    --gradient-sunset: linear-gradient(135deg, hsl(14 90% 57%), hsl(48 96% 53%), hsl(199 89% 48%));
+    --gradient-storm: linear-gradient(135deg, hsl(217 33% 17%), hsl(222 47% 11%), hsl(195 100% 39%));
+    --gradient-radial: radial-gradient(circle at center, hsl(217 91% 60% / 0.1), transparent 70%);
+
+    /* Shadows */
+    --shadow-glow: 0 0 20px hsl(217 91% 60% / 0.3);
+    --shadow-glow-lg: 0 0 40px hsl(217 91% 60% / 0.4);
+    --shadow-inner-glow: inset 0 0 20px hsl(217 91% 60% / 0.1);
+    --shadow-elevation: 0 10px 30px -10px hsl(224 71% 4% / 0.8);
+  }
+
+  /* Light mode overrides */
+  .light {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --card-glow: 217 91% 60%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+    --primary-glow: 199 89% 48%;
+
+    --secondary: 263 70% 50%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 173 80% 40%;
+    --accent-foreground: 210 40% 98%;
+    --accent-glow: 173 80% 50%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
+
+    /* Gradients for light mode */
+    --gradient-space: linear-gradient(180deg, hsl(210 40% 98%), hsl(214 32% 95%), hsl(217 33% 90%));
+    --shadow-elevation: 0 10px 30px -10px hsl(217 33% 17% / 0.2);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
