@@ -35,8 +35,10 @@ interface WeatherProbability {
 }
 
 // Geocoding API service (CORS-friendly via Open-Meteo)
-// Do NOT default to localhost in production. Leave empty when not configured.
-const API_BASE = (import.meta as any).env?.VITE_BACKEND_URL || '';
+// Ignore localhost URLs on production hosts to avoid failed calls on Vercel
+const __RAW_API_BASE = (import.meta as any).env?.VITE_BACKEND_URL || '';
+const __IS_LOCALHOST = typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
+const API_BASE = __RAW_API_BASE && !/__?localhost|127\.0\.0\.1/i.test(__RAW_API_BASE) ? __RAW_API_BASE : (__IS_LOCALHOST ? __RAW_API_BASE : '');
 
 const GEOCODING_API = {
   // Accept either a place name or "lat,lng" string
@@ -857,7 +859,9 @@ function WeatherEffects({ weatherType }: { weatherType: string }) {
 }
 
 // Backend API Integration
-const BACKEND_URL = (import.meta as any).env?.VITE_BACKEND_URL || '';
+const BACKEND_URL = (__RAW_API_BASE && !/__?localhost|127\.0\.0\.1/i.test(__RAW_API_BASE))
+  ? __RAW_API_BASE
+  : (__IS_LOCALHOST ? __RAW_API_BASE : '');
 
 const analyzeWeatherRisk = async (location: {lat: number, lng: number}, date: Date, thresholds: WeatherThresholds): Promise<{probabilities: WeatherProbability[], comfortIndex: number, alternatives: any[], metadata: any}> => {
   try {
