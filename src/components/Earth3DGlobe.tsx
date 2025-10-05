@@ -118,6 +118,19 @@ const GEOCODING_API = {
         }
       }
 
+      // Public Nominatim fallback when no backend is configured
+      if (!candidates.length && !API_BASE) {
+        try {
+          const nomPublic = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=5&addressdetails=1`, {
+            headers: { 'Accept': 'application/json' }
+          }).catch(()=>null as any);
+          if (nomPublic && nomPublic.ok) {
+            const nomData = await nomPublic.json();
+            (Array.isArray(nomData)?nomData:[]).forEach((r:any)=> push(parseFloat(r.lat), parseFloat(r.lon), r.display_name || r.name || ''));
+          }
+        } catch {}
+      }
+
       if (!candidates.length) {
         // Retry with country hint via backend proxy
         const retry = API_BASE
