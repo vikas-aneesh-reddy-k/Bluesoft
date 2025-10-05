@@ -647,6 +647,27 @@ const Index = () => {
           </div>
         </div>
       </div>
+      {/* Footer */}
+      <footer className="relative z-30 border-t border-primary/20 bg-card/60 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-4 py-4 text-center text-xs sm:text-sm text-muted-foreground">
+          <div className="mb-1">
+            Made with <span role="img" aria-label="love">❤️</span> by
+          </div>
+          <div className="flex flex-wrap gap-x-3 gap-y-1 justify-center">
+            <span>Vikas Kakarla</span>
+            <span>•</span>
+            <span>Sujith Putta</span>
+            <span>•</span>
+            <span>Dhanya Potla</span>
+            <span>•</span>
+            <span>Charan Gonuguntla</span>
+            <span>•</span>
+            <span>Sameeksha Ambati</span>
+            <span>•</span>
+            <span>Vignatri M</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
